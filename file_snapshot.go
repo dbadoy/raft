@@ -251,6 +251,9 @@ func (f *FileSnapshotStore) getSnapshots() ([]*fileSnapshotMeta, error) {
 	var snapMeta []*fileSnapshotMeta
 
 	// Sort the snapshot, reverse so we get new -> old
+	// 그런데, 이 방법은 힘들어보인다.
+	// 일단 readdir는 order를 보장하지 않는다.
+	// 기존에 정렬하던 sort는 meta 데이터안에 index, term을 비교하는 것이다.
 	for i := len(snapshots); i > 0; i-- {
 		snap := snapshots[i-1]
 		// Ignore any files
