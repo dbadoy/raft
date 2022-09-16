@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"sort"
 	"strings"
 	"time"
 
@@ -250,7 +249,10 @@ func (f *FileSnapshotStore) getSnapshots() ([]*fileSnapshotMeta, error) {
 
 	// Populate the metadata
 	var snapMeta []*fileSnapshotMeta
-	for _, snap := range snapshots {
+
+	// Sort the snapshot, reverse so we get new -> old
+	for i := len(snapshots); i > 0; i-- {
+		snap := snapshots[i-1]
 		// Ignore any files
 		if !snap.IsDir() {
 			continue
@@ -279,9 +281,6 @@ func (f *FileSnapshotStore) getSnapshots() ([]*fileSnapshotMeta, error) {
 		// Append, but only return up to the retain count
 		snapMeta = append(snapMeta, meta)
 	}
-
-	// Sort the snapshot, reverse so we get new -> old
-	sort.Sort(sort.Reverse(snapMetaSlice(snapMeta)))
 
 	return snapMeta, nil
 }
